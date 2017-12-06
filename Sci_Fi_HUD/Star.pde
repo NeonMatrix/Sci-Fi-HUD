@@ -16,8 +16,9 @@ class Star
 
   }
   
-  void update()
+  void update(float speed)
   {
+    this.speed = speed;
     z = z - speed;
     if (z < 1)
     {
