@@ -36,7 +36,7 @@ class Radar
       ellipse(rx, ry, innerCircles*i , innerCircles*i);
     }
     
-    int trailLength = 10;
+    int trailLength = 30;
     float cIntensity = 255 / (float)trailLength;
     for(int i = 0; i < trailLength; i++)
     {

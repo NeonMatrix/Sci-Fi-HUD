@@ -5,6 +5,7 @@ void setup()
   warpDrive = false;
   speed = 0;
   speedUp = false;
+  starMapActive = false;
   warpAccelration = 5;
  
  for(int i = 0; i < 8000; i++)
@@ -20,11 +21,13 @@ float speed;
 boolean warpDrive;
 boolean speedUp;
 float warpAccelration;
+boolean starMapActive;
+
+
 Radar radar1;
 
 void draw()
 {
-  
   background(0);
   
   warpDrive();
@@ -38,6 +41,11 @@ void draw()
     s.render();
   }
   popMatrix();
+  
+  if(starMapActive)
+  {
+    starGrid();
+  }
   
   board();
   
@@ -54,12 +62,20 @@ void mousePressed()
 {
   if(mouseX < (width * 0.22) + height/7 && mouseX >  width * 0.22)
   {
-    println("mouseX");
     if(mouseY > height * 0.9 && mouseY < height * 0.9 + height/20)
     {
-      println("mouseX");
       warpDrive = true;
       speedUp = true;
+      starMapActive = false;
+    }
+  }
+  
+  if(mouseX > width * 0.22 && mouseX < (width * 0.22) + height/7)
+  {
+    if(mouseY > height * 0.75 && mouseY < height * 0.75 + height/7)
+    {
+      println("StarMap");
+      starMapActive = true;
     }
   }
 }
@@ -137,4 +153,24 @@ void starMapButton()
     line(posX, posY + ((size/10)*i), posX + size, posY + ((size/10)*i));
   }
   
+}
+
+void starGrid()
+{
+  fill(0, 110, 255);
+  stroke(0, 255, 0);
+  float border = height * 0.2f;
+  //float hBorder = height * 0.1f;
+  textAlign(LEFT);
+  for(int xg = -5; xg <= 5; xg++)
+  {
+     float pos = map(xg, -5, 5, border, width - border);
+     
+     text(xg, pos, border * 0.5);
+     line(pos, border, pos, height - border);
+     
+     text(xg, border * 0.5, pos);
+     line(border, pos, width - border, pos);
+     
+  }
 }
