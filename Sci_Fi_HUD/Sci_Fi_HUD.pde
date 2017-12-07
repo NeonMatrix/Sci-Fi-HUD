@@ -1,11 +1,11 @@
 void setup()
 {
-  //size (700, 700); 
-  fullScreen();
+  size (700, 700); 
+  //fullScreen();
   warpDrive = false;
   speed = 0;
   speedUp = false;
-  warpAccelration = 2;
+  warpAccelration = 5;
  
  for(int i = 0; i < 8000; i++)
  {
@@ -29,6 +29,8 @@ void draw()
   //println(speed);
   background(0);
   
+  warpDrive();
+  
   pushMatrix();
   translate(width/2, height/2);
   for(int i = 0; i < stars.size(); i++)
@@ -42,19 +44,22 @@ void draw()
   board();
   
   warpButton();
-  warpDrive();
   
   radar1.render();
   radar1.update();
+  
+  starMapButton();
     
 }
 
 void mousePressed()
 {
-  if(mouseX < width/2 + (width/5)/2 && mouseX > width/2 - + (width/5)/2)
+  if(mouseX < (width * 0.22) + height/7 && mouseX >  width * 0.22)
   {
-    if(mouseY < height * 0.9 + (height/20)/2 && mouseY > height * 0.9 - (height/20)/2)
+    println("mouseX");
+    if(mouseY > height * 0.9 && mouseY < height * 0.9 + height/20)
     {
+      println("mouseX");
       warpDrive = true;
       speedUp = true;
     }
@@ -72,13 +77,18 @@ void board()
 
 void warpButton()
 {
+   float buttonX = width * 0.22;
+   float buttonY = height * 0.9;
+   float buttonW = height/7;
+   float buttonH = height/20;
    fill(0, 110, 255);
-   rectMode(CENTER);
-   rect(width/2, height * 0.9, width/5, height/20);
+   noStroke();
+   //rectMode(CENTER);
+   rect(buttonX , buttonY, buttonW, buttonH);
    fill(0);
    textAlign(CENTER);
-   textSize(height/20);
-   text("WARP", width/2, height * 0.92);
+   textSize(height/30);
+   text("WARP", buttonX + (buttonW/2), buttonY + ((buttonH/3) *2 ));
 }
 
 void warpDrive()
@@ -91,6 +101,7 @@ void warpDrive()
     if(speedUp)
     {
      speed +=  warpAccelration;
+     background(0, 0, speed);
      println(speed);
      if(speed > 200)
      {
@@ -101,7 +112,8 @@ void warpDrive()
     else
     {
       println("speedUp: " + speedUp);
-      speed--;
+      speed -= warpAccelration;
+      background(0, 0, speed);
     }
     
     if(speed == 0)
@@ -112,4 +124,19 @@ void warpDrive()
     }
     
   }
+}
+
+void starMapButton()
+{
+  float size = height/7;
+  float posX = width * 0.22;
+  float posY = height * 0.75;
+  
+  strokeWeight(1);
+  for(int i = 0; i < 11; i++)
+  {
+    line(posX + ((size/10)*i), posY, posX + ((size/10)*i), posY + size);
+    line(posX, posY + ((size/10)*i), posX + size, posY + ((size/10)*i));
+  }
+  
 }
