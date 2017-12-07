@@ -25,8 +25,6 @@ Radar radar1;
 void draw()
 {
   
-  //speed = map(mouseX, 0, width, 0, 100);
-  //println(speed);
   background(0);
   
   warpDrive();
