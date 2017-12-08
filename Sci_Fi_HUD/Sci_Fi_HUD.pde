@@ -8,6 +8,8 @@ void setup()
   speedUp = false;
   starMapActive = false;
   warpAccelration = 5;
+  click1 = false;
+  click2 = false;
  
  for(int i = 0; i < 8000; i++)
  {
@@ -19,6 +21,9 @@ void setup()
 
 ArrayList<Star> stars = new ArrayList<Star>();
 ArrayList<MapStar> mapstars = new ArrayList<MapStar>();
+PVector mouseV, starV, clickedStar1, clickedStar2;
+float cstar1x, cstar1y, cstar2x, cstar2y;
+boolean click1, click2;
 float speed;
 boolean warpDrive;
 boolean speedUp;
@@ -48,6 +53,13 @@ void draw()
   {
     starMapGrid();
     drawMapStars();
+    if(click1 == true && click2 == true)
+    {
+     textAlign(CENTER);
+     stroke(0, 255, 255);
+     line(cstar1x, cstar1y, cstar2x, cstar2y);
+     text("Star Distance: " + clickedStar1.dist(clickedStar2) + " parsecs", width/2, height* 0.65);
+    }
   }
   
   board();
@@ -86,6 +98,52 @@ void mousePressed()
         println("StarMap");
         starMapActive = true;
       }
+    }
+  }
+  
+  if(starMapActive)
+  {
+    float size = height/2;
+    float posX = width/2;
+    float posY = height * 0.1;
+  
+    if(click1 == true && click2 == true)
+    {
+     click1 = false;
+     click2 = false;
+    }
+  
+    mouseV = new PVector(mouseX, mouseY);
+    
+    for(MapStar s:mapstars)
+    {
+     float realStarX = map(s.xg, -5, 5, posX - (size/2), posX + (size/2));
+     float realStarY = map(s.yg, -5, 5, posY, posY + size);
+     
+     //float x = map(s.xg, -5, 5, posX - (size/2), posX + (size/2));
+     //float y = map(s.yg, -5, 5, posY, posY + size);
+     
+     starV = new PVector(realStarX, realStarY);
+     
+     float dist = mouseV.dist(starV);
+     
+     if(dist <= s.mag)
+     {
+        if(click1 == false)
+        {
+          clickedStar1 = new PVector(s.xg, s.yg, s.zg);
+          cstar1x = realStarX;
+          cstar1y = realStarY;
+          click1 = true;
+        }
+        else
+        {
+          clickedStar2 = new PVector(s.xg, s.yg, s.zg);
+          cstar2x = realStarX;
+          cstar2y = realStarY;
+          click2 = true;
+        }
+     }   
     }
   }
 }
@@ -215,12 +273,14 @@ void starMapGrid()
 void drawMapStars()
 {
   stroke(255, 255, 0);
-  float border = width * 0.1f;
+  float size = height/2;
+  float posX = width/2;
+  float posY = height * 0.1;
   
   for(MapStar s:mapstars)
   {
-    float x = map(s.xg, -5, 5, border, width - border);
-    float y = map(s.yg, -5, 5, border, width - border);
+    float x = map(s.xg, -5, 5, posX - (size/2), posX + (size/2));
+    float y = map(s.yg, -5, 5, posY, posY + size);
     stroke(255, 255, 0);
     line(x, y - 2, x, y + 2);
     line(x -2 , y, x + 2, y);
@@ -230,6 +290,7 @@ void drawMapStars()
     ellipse(x, y, s.mag, s.mag);
     
     fill(255);
+    textSize(height/60);
     text(s.displayName, x, y - 10);
   }
 }
