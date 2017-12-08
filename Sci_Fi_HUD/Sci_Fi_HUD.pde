@@ -1,7 +1,8 @@
 void setup()
 {
-  size (700, 700,P2D); 
+  size (1000, 1000,P2D); 
   //fullScreen();
+  loadData();
   warpDrive = false;
   speed = 0;
   speedUp = false;
@@ -17,6 +18,7 @@ void setup()
 }
 
 ArrayList<Star> stars = new ArrayList<Star>();
+ArrayList<MapStar> mapstars = new ArrayList<MapStar>();
 float speed;
 boolean warpDrive;
 boolean speedUp;
@@ -44,7 +46,8 @@ void draw()
   
   if(starMapActive)
   {
-    starGrid();
+    starMapGrid();
+    drawMapStars();
   }
   
   board();
@@ -86,6 +89,27 @@ void mousePressed()
     }
   }
 }
+
+void loadData()
+{
+  Table table = loadTable("starmap.csv", "header");
+  
+  for(TableRow r : table.rows())
+  {
+     MapStar mapstar = new MapStar(r);
+     mapstars.add(mapstar);
+  }
+  
+  /*
+  for(int i = 0; i < mapstars.size() ; i++)
+  {
+    MapStar s = mapstars.get(i);
+    println(s.displayName);
+  }
+  */
+}
+
+
 
 void board()
 {
@@ -162,7 +186,7 @@ void starMapButton()
   
 }
 
-void starGrid()
+void starMapGrid()
 {
   
   float size = height/2;
@@ -170,13 +194,42 @@ void starGrid()
   float posY = height * 0.1;
   
   stroke(0, 110, 255);
+  fill(0, 110, 255);
   strokeWeight(1);
-  for(int i = -5; i <= 5; i++)
+  int counter = -5;
+  textAlign(CENTER, CENTER);
+  
+  for(int i = 0; i < 11; i++)
   {
+    textAlign(CENTER);
+    text(counter, (posX + ((size/10)*i)) - (size/2), posY - height/100);
+    line((posX + ((size/10)*i)) - (size/2) , posY, (posX + ((size/10)*i)) - (size/2), posY + size);
     
-    //line((posX + ((size/10)*i)) - (size/2) , posY, (posX + ((size/10)*i)) - (size/2), posY + size);
-    
-    //text();
+    textAlign(RIGHT, CENTER);
+    text(counter, posX - (size/2) - height/100, posY + ((size/10)*i));
     line(posX - (size/2), posY + ((size/10)*i), (posX + size) - (size/2), posY + ((size/10)*i));
+    counter++;
+  }
+}
+
+void drawMapStars()
+{
+  stroke(255, 255, 0);
+  float border = width * 0.1f;
+  
+  for(MapStar s:mapstars)
+  {
+    float x = map(s.xg, -5, 5, border, width - border);
+    float y = map(s.yg, -5, 5, border, width - border);
+    stroke(255, 255, 0);
+    line(x, y - 2, x, y + 2);
+    line(x -2 , y, x + 2, y);
+   
+    noFill();
+    stroke(255, 0, 0);
+    ellipse(x, y, s.mag, s.mag);
+    
+    fill(255);
+    text(s.displayName, x, y - 10);
   }
 }
