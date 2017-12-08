@@ -1,7 +1,7 @@
 void setup()
 {
-  size (1000, 1000,P2D); 
-  //fullScreen();
+  //size (1000, 1000,P2D); 
+  fullScreen();
   loadData();
   warpDrive = false;
   speed = 0;
@@ -106,9 +106,9 @@ void mousePressed()
   //if star map is up, it will check if it clicked on which stars
   if(starMapActive)
   {
-    float size = height/2;
+    float size = height/1.75;
     float posX = width/2;
-    float posY = height * 0.1;
+    float posY = height * 0.05;
   
     if(click1 == true && click2 == true)
     {
@@ -122,9 +122,6 @@ void mousePressed()
     {
      float realStarX = map(s.xg, -5, 5, posX - (size/2), posX + (size/2));
      float realStarY = map(s.yg, -5, 5, posY, posY + size);
-     
-     //float x = map(s.xg, -5, 5, posX - (size/2), posX + (size/2));
-     //float y = map(s.yg, -5, 5, posY, posY + size);
      
      starV = new PVector(realStarX, realStarY);
      
@@ -160,17 +157,7 @@ void loadData()
      MapStar mapstar = new MapStar(r);
      mapstars.add(mapstar);
   }
-  
-  /*
-  for(int i = 0; i < mapstars.size() ; i++)
-  {
-    MapStar s = mapstars.get(i);
-    println(s.displayName);
-  }
-  */
 }
-
-
 
 void board()
 {
@@ -244,22 +231,21 @@ void starMapButton()
     line(posX + ((size/10)*i), posY, posX + ((size/10)*i), posY + size);
     line(posX, posY + ((size/10)*i), posX + size, posY + ((size/10)*i));
   }
-  
 }
 
 void starMapGrid()
 {
   
-  float size = height/2;
+  float size = height/1.75;
   float posX = width/2;
-  float posY = height * 0.1;
+  float posY = height * 0.05;
   
   stroke(0, 110, 255);
   fill(0, 110, 255);
   strokeWeight(1);
   int counter = -5;
   textAlign(CENTER, CENTER);
-  
+  textSize(height/50);
   for(int i = 0; i < 11; i++)
   {
     textAlign(CENTER);
@@ -276,9 +262,9 @@ void starMapGrid()
 void drawMapStars()
 {
   stroke(255, 255, 0);
-  float size = height/2;
+  float size = height/1.75;
   float posX = width/2;
-  float posY = height * 0.1;
+  float posY = height * 0.05;
   
   for(MapStar s:mapstars)
   {
@@ -293,7 +279,7 @@ void drawMapStars()
     ellipse(x, y, s.mag, s.mag);
     
     fill(255);
-    textSize(height/60);
+    textSize(height/70);
     text(s.displayName, x, y - 10);
   }
 }
