@@ -75,6 +75,7 @@ void draw()
 
 void mousePressed()
 {
+  // checks if mouse clicked on the warp button
   if(mouseX < (width * 0.22) + height/7 && mouseX >  width * 0.22)
   {
     if(mouseY > height * 0.9 && mouseY < height * 0.9 + height/20)
@@ -85,6 +86,7 @@ void mousePressed()
     }
   }
   
+  // checks if mouse clicked on the star map button
   if(mouseX > width * 0.22 && mouseX < (width * 0.22) + height/7)
   {
     if(mouseY > height * 0.75 && mouseY < height * 0.75 + height/7)
@@ -101,6 +103,7 @@ void mousePressed()
     }
   }
   
+  //if star map is up, it will check if it clicked on which stars
   if(starMapActive)
   {
     float size = height/2;
