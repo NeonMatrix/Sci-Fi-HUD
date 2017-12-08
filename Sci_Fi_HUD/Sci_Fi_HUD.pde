@@ -1,6 +1,6 @@
 void setup()
 {
-  size (700, 700); 
+  size (700, 700,P2D); 
   //fullScreen();
   warpDrive = false;
   speed = 0;
@@ -74,8 +74,15 @@ void mousePressed()
   {
     if(mouseY > height * 0.75 && mouseY < height * 0.75 + height/7)
     {
-      println("StarMap");
-      starMapActive = true;
+      if(starMapActive)
+      {
+        starMapActive = false;
+      }
+      else
+      {
+        println("StarMap");
+        starMapActive = true;
+      }
     }
   }
 }
@@ -157,20 +164,19 @@ void starMapButton()
 
 void starGrid()
 {
-  fill(0, 110, 255);
-  stroke(0, 255, 0);
-  float border = height * 0.2f;
-  //float hBorder = height * 0.1f;
-  textAlign(LEFT);
-  for(int xg = -5; xg <= 5; xg++)
+  
+  float size = height/2;
+  float posX = width/2;
+  float posY = height * 0.1;
+  
+  stroke(0, 110, 255);
+  strokeWeight(1);
+  for(int i = -5; i <= 5; i++)
   {
-     float pos = map(xg, -5, 5, border, width - border);
-     
-     text(xg, pos, border * 0.5);
-     line(pos, border, pos, height - border);
-     
-     text(xg, border * 0.5, pos);
-     line(border, pos, width - border, pos);
-     
+    
+    //line((posX + ((size/10)*i)) - (size/2) , posY, (posX + ((size/10)*i)) - (size/2), posY + size);
+    
+    //text();
+    line(posX - (size/2), posY + ((size/10)*i), (posX + size) - (size/2), posY + ((size/10)*i));
   }
 }
