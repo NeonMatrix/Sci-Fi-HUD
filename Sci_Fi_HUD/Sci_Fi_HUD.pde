@@ -15,6 +15,7 @@ void setup()
   aimY = height/2;
   laserPower = 2;
 
+  // adds stars
   for (int i = 0; i < 10000; i++)
   {
     stars.add(new Star());
