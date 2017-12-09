@@ -25,6 +25,7 @@ void setup()
   aim = new Spinny(width/2, height/2, 2);
 }
 
+// delcaring variables
 ArrayList<Star> stars = new ArrayList<Star>();
 ArrayList<MapStar> mapstars = new ArrayList<MapStar>();
 PVector mouseV, starV, clickedStar1, clickedStar2;
