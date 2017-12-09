@@ -91,6 +91,7 @@ void draw()
   //aimBullEye();
 }
 
+// checls which buttons have been pressed
 void mousePressed()
 {
   // checks if mouse clicked on the warp button
