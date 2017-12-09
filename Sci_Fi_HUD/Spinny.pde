@@ -1,20 +1,22 @@
-class Aim
+class Spinny
 {
  
   float x, y, theta, speed, freq;
   
-  Aim(float x, float y)
+  Spinny(float x, float y, float freq)
   {
     this.x = x;
     this.y = y;
-    freq = 2;
+    this.freq = freq;
     speed = (PI / 60.0) * freq;
     theta = 0;
   }
   
   
-  void update()
+  void update(float x, float y)
   {
+    this.x = x;
+    this.y = y;
     theta += speed;
   }
   

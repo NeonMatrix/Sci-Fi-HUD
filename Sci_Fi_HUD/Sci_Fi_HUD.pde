@@ -11,16 +11,17 @@ void setup()
   click1 = false;
   click2 = false;
   laserOn = false;
-  theta1 = 0;
-  theta2 = 0;
+  aimX = width/2;
+  aimY = height/2;
+  laserPower = 2;
 
-  for (int i = 0; i < 8000; i++)
+  for (int i = 0; i < 10000; i++)
   {
     stars.add(new Star());
   }
   
   radar1 = new Radar(width/9, height * 0.85, height * 0.08, 0.5, color(0, 110, 255));
-  aim = new Aim(width/2, height/2);
+  aim = new Spinny(width/2, height/2, 2);
 }
 
 ArrayList<Star> stars = new ArrayList<Star>();
@@ -34,14 +35,20 @@ boolean speedUp;
 float warpAccelration;
 boolean starMapActive;
 boolean laserOn;
-float theta1;
-float theta2;
+float aimX, aimY;
+float laserPower;
 
 Radar radar1;
-Aim aim;
+Spinny aim;
+
+
 void draw()
 {
   background(0);
+  if(laserOn)
+  {
+    drawAim(aimX, aimY);
+  }
 
   warpDrive();
 
@@ -77,9 +84,7 @@ void draw()
 
   starMapButton();
   laserButton();
-
-  aim.update();
-  aim.render();
+  laserToggle();
 
   //aimBullEye();
 }
@@ -109,6 +114,7 @@ void mousePressed()
       {
         println("StarMap");
         starMapActive = true;
+        laserOn = false;
       }
     }
   }
@@ -162,10 +168,41 @@ void mousePressed()
     {
       if (laserOn)
       {
+        aimX = width/2;
+        aimY = height/2;
         laserOn = false;
       } else {
         laserOn = true;
+        starMapActive = false;
       }
+    }
+  }
+}
+
+void mouseDragged()
+{
+  float buttonX = width * 0.6;
+  float buttonY = height * 0.75;
+  float buttonW = height/100;
+  float buttonH = height/5;
+  //rect(buttonX + buttonW/2, map(laserPower, 0,10, buttonY + buttonH, buttonY) , height/20, height/50);
+  
+  if(mouseX > (buttonX + buttonW/2) - (height/20)/2 && mouseX < (buttonX + buttonW/2) + (height/20)/2 )
+  {
+    if(mouseY > map(laserPower, 0,10, buttonY + buttonH, buttonY) - (height/50)/2 && mouseY < map(laserPower, 0,10, buttonY + buttonH, buttonY) + (height/50)/2)
+    {
+        laserPower = map(mouseY, buttonY, buttonY + buttonH, 10, 0);
+        
+        if(laserPower < 0)
+        {
+          laserPower = 0;
+        }
+        if(laserPower > 10)
+        {
+          laserPower = 10;
+        }
+        println(laserPower);
+      
     }
   }
 }
@@ -180,6 +217,7 @@ void loadData()
     mapstars.add(mapstar);
   }
 }
+
 
 void board()
 {
@@ -316,29 +354,60 @@ void laserButton()
   text("LASER", posX, posY);
 }
 
-/*
-void aimBullEye()
+void drawAim(float x, float y)
 {
-  float x, y;
-  x = width/2;
-  y = height/2;
-  float speed, freq;
-  freq = 2;
-  speed = (PI / 60.0) * freq;
-  theta1 += speed;
-  //theta2 -= speed;
-  strokeWeight(2);
-  noFill();
-
-
- 
-  arc(x, y, 50, 50, 0, PI);
-
-  arc(x, y, 70, 70, PI, TWO_PI); 
+  strokeWeight(5);
+  line(x, y - 10, x, y - 45);
+  line(x + 10, y, x + 45, y);
+  line(x, y + 10, x, y + 45);
+  line(x - 10, y, x - 45, y);
   
-       float x = rx + sin(theta + i * speed) * r;
-     float y = ry -cos(theta + i * speed) * r;
-
-
+  aim.update(x, y);
+  aim.render();
+  
+  if(keyPressed)
+  {
+     switch(keyCode)
+     {
+       case UP: aimY -= width/100; break;
+       case DOWN: aimY += width/100; break;
+       case LEFT: aimX -=  width/100; break;
+       case RIGHT: aimX += width/100; break;
+     }
+    if(key == ' ')
+    {
+      shootLaser();
+    }
+  }
+  
 }
-*/
+
+void shootLaser()
+{
+  strokeWeight(laserPower);
+  stroke(255, 0, map(laserPower, 0, 10, 0, 255));
+  line(0, height, aimX, aimY);
+  line(width, height, aimX, aimY);
+}
+
+void laserToggle()
+{
+  float buttonX = width * 0.6;
+  float buttonY = height * 0.75;
+  float buttonW = height/100;
+  float buttonH = height/5;
+  
+  rect(buttonX, buttonY, buttonW, buttonH);
+  
+  float gaps = buttonH/10;
+  textSize(height/50);
+  textAlign(RIGHT);
+  for(int i = 0; i <= 10; i++)
+  {
+   text(i + "-", buttonX - (width/50), (buttonY + buttonH)  - (gaps * i)); 
+  }
+  
+  rectMode(CENTER);
+  fill(0, 110, 225);
+  rect(buttonX + buttonW/2, map(laserPower, 0,10, buttonY + buttonH, buttonY) , height/20, height/50);
+}
