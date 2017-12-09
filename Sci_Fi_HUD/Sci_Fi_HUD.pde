@@ -381,6 +381,24 @@ void drawAim(float x, float y)
     {
       shootLaser();
     }
+    
+    if(aimX > width)
+    {
+      aimX = width;
+    }
+    if(aimX < 0)
+    {
+      aimX = 0;
+    }
+    
+    if(aimY > height)
+    {
+      aimY = height;
+    }
+    if(aimY < 0)
+    {
+      aimY = 0;
+    }
   }
   
 }
