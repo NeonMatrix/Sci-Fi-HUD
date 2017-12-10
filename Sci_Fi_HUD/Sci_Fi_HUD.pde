@@ -16,6 +16,7 @@ void setup()
   laserPower = 2;
   laserCharge = 100;
   shieldCharge = 100;
+  shootingLaser = false;
 
   // adds stars
   for (int i = 0; i < 10000; i++)
@@ -43,6 +44,7 @@ float aimX, aimY;
 float laserPower;
 float laserCharge;
 float shieldCharge;
+boolean shootingLaser;
 Radar radar1;
 Spinny aim;
 
@@ -66,6 +68,14 @@ void draw()
   if(laserOn)
   {
     drawAim(mouseX, mouseY);
+  }
+  
+  if(shootingLaser)
+  {
+    if(laserCharge > laserPower)
+      {
+        shootLaser(mouseX, mouseY);
+      }
   }
 
   if (starMapActive)
@@ -113,6 +123,7 @@ void mousePressed()
       speedUp = true;
       starMapActive = false;
       laserOn = false;
+      shootingLaser = false;
     }
   }
 
@@ -124,11 +135,13 @@ void mousePressed()
       if (starMapActive)
       {
         starMapActive = false;
+        shootingLaser = false;
       } else
       {
         println("StarMap");
         starMapActive = true;
         laserOn = false;
+        shootingLaser = false;
       }
     }
   }
@@ -185,19 +198,32 @@ void mousePressed()
         aimX = width/2;
         aimY = height/2;
         laserOn = false;
+        shootingLaser = false;
       } else {
-        laserOn = true;
+        //delay(1000);
+        //laserOn = true;
+        shootingLaser = false;
         starMapActive = false;
+        laserOn = true;
       }
     }
   }
   
   if(laserOn)
   {
+    shootingLaser = true;
     if(laserCharge > laserPower)
       {
         shootLaser(mouseX, mouseY);
       }
+  }
+}
+
+void mouseReleased()
+{
+  if(shootingLaser)
+  {
+    shootingLaser = false;
   }
 }
 
@@ -224,7 +250,7 @@ void mouseDragged()
           laserPower = 10;
         }
         println(laserPower);
-      
+        shootingLaser = false;
     }
   }
 }
