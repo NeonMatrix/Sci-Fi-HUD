@@ -1,7 +1,7 @@
 void setup()
 {
-  //size (800, 800, P2D); 
-  fullScreen();
+  size (800, 800, P2D); 
+  //fullScreen();
   loadData();
   warpDrive = false;
   speed = 0;
@@ -24,13 +24,17 @@ void setup()
     stars.add(new Star());
   }
   
+  currentStar = mapstars.get((int)random(0, mapstars.size()));
   radar1 = new Radar(width/9, height * 0.85, height * 0.08, 0.5, color(0, 110, 255));
   aim = new Spinny(width/2, height/2, 2);
+  
+  //println(mapstars.size());
 }
 
 // delcaring variables
 ArrayList<Star> stars = new ArrayList<Star>();
 ArrayList<MapStar> mapstars = new ArrayList<MapStar>();
+
 PVector mouseV, starV, clickedStar1, clickedStar2;
 float cstar1x, cstar1y, cstar2x, cstar2y;
 boolean click1, click2;
@@ -47,7 +51,7 @@ float shieldCharge;
 boolean shootingLaser;
 Radar radar1;
 Spinny aim;
-
+MapStar currentStar;
 
 void draw()
 {
@@ -103,12 +107,14 @@ void draw()
   laserToggle();
   chargeMetre();
   shieldMetre(); 
-  //aimBullEye();
+  drawCurrentStar();
   
   if(laserCharge <= 100)
   {
     laserCharge++;
   }
+  
+  println(currentStar.displayName);
 }
 
 // checls which buttons have been pressed
@@ -547,4 +553,20 @@ void shieldMetre()
   textAlign(CENTER);
   fill(0, 255, 255);
   text("Charge", buttonX + buttonW/2, (buttonY + buttonH) + height/40);
+}
+
+void drawCurrentStar()
+{
+  stroke(255);
+  strokeWeight(5);
+  float size = 200;
+  pushMatrix();
+  translate(width/2, height/2);
+  line(0,0, size, 0);
+  
+  line(size, 0, size/2, (sqrt(3) * size)/2);
+  line(0,0, size/2, ((sqrt(3) * size)/2));
+  popMatrix();
+  
+  println("alt of tri:" + (sqrt(3) * size)/2 );
 }
