@@ -17,6 +17,8 @@ void setup()
   laserCharge = 100;
   shieldCharge = 100;
   shootingLaser = false;
+  triangleTheta = 0;
+  starSelect = false;
 
   // adds stars
   for (int i = 0; i < 10000; i++)
@@ -48,10 +50,13 @@ float aimX, aimY;
 float laserPower;
 float laserCharge;
 float shieldCharge;
+float triangleTheta;
 boolean shootingLaser;
+boolean starSelect;
 Radar radar1;
 Spinny aim;
-MapStar currentStar;
+MapStar currentStar, selectedStar;
+
 
 void draw()
 {
@@ -114,7 +119,7 @@ void draw()
     laserCharge++;
   }
   
-  println(currentStar.displayName);
+  
 }
 
 // checls which buttons have been pressed
@@ -125,11 +130,14 @@ void mousePressed()
   {
     if (mouseY > height * 0.9 && mouseY < height * 0.9 + height/20)
     {
-      warpDrive = true;
-      speedUp = true;
-      starMapActive = false;
-      laserOn = false;
-      shootingLaser = false;
+      if(starSelect)
+      {
+        warpDrive = true;
+        speedUp = true;
+        starMapActive = false;
+        laserOn = false;
+        shootingLaser = false;
+      }
     }
   }
 
@@ -184,12 +192,15 @@ void mousePressed()
           cstar1x = realStarX;
           cstar1y = realStarY;
           click1 = true;
+          starSelect = true;
+          selectedStar = s;
         } else
         {
           clickedStar2 = new PVector(s.xg, s.yg, s.zg);
           cstar2x = realStarX;
           cstar2y = realStarY;
           click2 = true;
+          starSelect = false;
         }
       }
     }
@@ -289,6 +300,10 @@ void warpButton()
   float buttonW = height/7;
   float buttonH = height/20;
   fill(0, 110, 255);
+  if(starSelect)
+  {
+    fill(0, 255, 0);
+  }
   noStroke();
   //rectMode(CENTER);
   rect(buttonX, buttonY, buttonW, buttonH);
@@ -305,6 +320,7 @@ void warpDrive()
     println(speed);
     println("warpDrive: " + warpDrive);
     println("speedUp: " + speedUp);
+    starSelect = false;
     if (speedUp)
     {
       speed +=  warpAccelration;
@@ -331,6 +347,8 @@ void warpDrive()
       warpDrive = false;
       println("warpDrive: " + warpDrive);
       shieldCharge = 100;
+      currentStar = selectedStar;
+      click1 = false;
     }
   }
 }
@@ -396,6 +414,7 @@ void drawMapStars()
 
     fill(255);
     textSize(height/70);
+    //textAlign(CENTER);
     text(s.displayName, x, y - 10);
   }
 }
@@ -421,46 +440,7 @@ void drawAim(float x, float y)
   line(x, y + 10, x, y + 45);
   line(x - 10, y, x - 45, y);
   aim.update(x, y);
-  aim.render();
-  
-  /*
-  if(keyPressed)
-  {
-     switch(keyCode)
-     {
-       case UP: aimY -= width/100; break;
-       case DOWN: aimY += width/100; break;
-       case LEFT: aimX -=  width/100; break;
-       case RIGHT: aimX += width/100; break;
-     }
-    if(key == ' ')
-    {
-      if(laserCharge > laserPower)
-      {
-        shootLaser();
-      }
-    }
-    
-    */
-    if(aimX > width)
-    {
-      aimX = width;
-    }
-    if(aimX < 0)
-    {
-      aimX = 0;
-    }
-    
-    if(aimY > height)
-    {
-      aimY = height;
-    }
-    if(aimY < 0)
-    {
-      aimY = 0;
-    }
-  //}
-  
+  aim.render();  
 }
 
 void shootLaser(float aimX, float aimY)
@@ -557,16 +537,28 @@ void shieldMetre()
 
 void drawCurrentStar()
 {
-  stroke(255);
-  strokeWeight(5);
-  float size = 200;
+  float x = width * 0.075;
+  float y = height * 0.075;
+  float size = height/10;
+  float speed = (PI / 60.0) * 1;
+  float triHeight = (sqrt(3) * size)/2;
+  triangleTheta += speed;
+  stroke(0, 110, 255);
+  strokeWeight(height/200);
+  
   pushMatrix();
-  translate(width/2, height/2);
-  line(0,0, size, 0);
-  
-  line(size, 0, size/2, (sqrt(3) * size)/2);
-  line(0,0, size/2, ((sqrt(3) * size)/2));
+  translate(x, y);
+  rotate(triangleTheta); 
+  line(0, -(triHeight/3)*2, -size/2, triHeight/3);  
+  line(-size/2, triHeight/3, size/2, triHeight/3); 
+  line(size/2, triHeight/3, 0, -(triHeight/3)*2);
   popMatrix();
+ 
+  line(x + triHeight + width/200, y + triHeight/2, (x + triHeight + width/200) + height/200 , (y + triHeight/2) - height/50); 
+  line((x + triHeight + width/200) + height/200, (y + triHeight/2) - height/50, ((x + triHeight + width/200) + height/200) + height/7 , (y + triHeight/2) - width/50);
   
-  println("alt of tri:" + (sqrt(3) * size)/2 );
+  textAlign(LEFT);
+  textSize(height/40);
+  text(currentStar.displayName,(x + triHeight + width/200) + height/200, height * 0.075);
+   
 }
