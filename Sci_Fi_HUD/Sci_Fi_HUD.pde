@@ -330,6 +330,7 @@ void warpDrive()
       background(0, 0, speed);
       println(speed);
       shieldCharge = random(50, 100);
+      // when maxium speeed is reached, speed stops and stars declearting
       if (speed > 200)
       {
         speedUp = false; 
