@@ -14,6 +14,7 @@ void setup()
   aimX = width/2;
   aimY = height/2;
   laserPower = 2;
+  laserCharge = 100;
 
   // adds stars
   for (int i = 0; i < 10000; i++)
@@ -39,7 +40,7 @@ boolean starMapActive;
 boolean laserOn;
 float aimX, aimY;
 float laserPower;
-
+float laserCharge;
 Radar radar1;
 Spinny aim;
 
@@ -47,10 +48,6 @@ Spinny aim;
 void draw()
 {
   background(0);
-  if(laserOn)
-  {
-    drawAim(aimX, aimY);
-  }
 
   warpDrive();
 
@@ -63,6 +60,11 @@ void draw()
     s.render();
   }
   popMatrix();
+  
+  if(laserOn)
+  {
+    drawAim(aimX, aimY);
+  }
 
   if (starMapActive)
   {
@@ -87,7 +89,7 @@ void draw()
   starMapButton();
   laserButton();
   laserToggle();
-
+  chargeMetre();
   //aimBullEye();
 }
 
@@ -102,6 +104,7 @@ void mousePressed()
       warpDrive = true;
       speedUp = true;
       starMapActive = false;
+      laserOn = false;
     }
   }
 
@@ -360,11 +363,11 @@ void laserButton()
 void drawAim(float x, float y)
 {
   strokeWeight(5);
+  stroke(0, 110, 255);
   line(x, y - 10, x, y - 45);
   line(x + 10, y, x + 45, y);
   line(x, y + 10, x, y + 45);
   line(x - 10, y, x - 45, y);
-  
   aim.update(x, y);
   aim.render();
   
@@ -406,7 +409,8 @@ void drawAim(float x, float y)
 void shootLaser()
 {
   strokeWeight(laserPower);
-  stroke(255, 0, map(laserPower, 0, 10, 0, 255));
+  //stroke(255, 0, map(laserPower, 0, 10, 0, 255));
+  stroke(225, 0, 0);
   line(0, height, aimX, aimY);
   line(width, height, aimX, aimY);
 }
@@ -431,4 +435,17 @@ void laserToggle()
   rectMode(CENTER);
   fill(0, 110, 225);
   rect(buttonX + buttonW/2, map(laserPower, 0,10, buttonY + buttonH, buttonY) , height/20, height/50);
+}
+
+void chargeMetre()
+{
+  float buttonX = width * 0.75;
+  float buttonY = height * 0.85;
+  float buttonW = height/12;
+  float buttonH = height/5;
+  
+  rect(buttonX, buttonY, buttonW, buttonH);
+  
+  //rect
+  
 }
