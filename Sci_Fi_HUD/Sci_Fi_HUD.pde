@@ -91,6 +91,11 @@ void draw()
   laserToggle();
   chargeMetre();
   //aimBullEye();
+  
+  if(laserCharge <= 100)
+  {
+    laserCharge++;
+  }
 }
 
 // checls which buttons have been pressed
@@ -382,7 +387,10 @@ void drawAim(float x, float y)
      }
     if(key == ' ')
     {
-      shootLaser();
+      if(laserCharge > laserPower)
+      {
+        shootLaser();
+      }
     }
     
     if(aimX > width)
@@ -413,6 +421,7 @@ void shootLaser()
   stroke(225, 0, 0);
   line(0, height, aimX, aimY);
   line(width, height, aimX, aimY);
+  laserCharge -= laserPower;
 }
 
 void laserToggle()
@@ -439,13 +448,18 @@ void laserToggle()
 
 void chargeMetre()
 {
-  float buttonX = width * 0.75;
-  float buttonY = height * 0.85;
+  float buttonX = width * 0.7;
+  float buttonY = height * 0.75;
   float buttonW = height/12;
   float buttonH = height/5;
   
+  rectMode(CORNER);
+  fill(255, 255, 0);
   rect(buttonX, buttonY, buttonW, buttonH);
   
-  //rect
-  
+  fill(0);
+  noStroke();
+  rect(buttonX, buttonY, buttonW, map(laserCharge, 100, 0, 0, buttonH) );
+  //map(laserCharge, 0, 100, buttonY + buttonH, buttonY)
+  //println(map(laserCharge, 100, 0, buttonY, buttonY + buttonH));
 }
