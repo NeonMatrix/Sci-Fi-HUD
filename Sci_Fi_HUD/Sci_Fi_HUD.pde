@@ -460,6 +460,14 @@ void chargeMetre()
   fill(0);
   noStroke();
   rect(buttonX, buttonY, buttonW, map(laserCharge, 100, 0, 0, buttonH) );
+  
+  float gaps = buttonH/10;
+  textSize(height/50);
+  textAlign(RIGHT);
+  for(int i = 0; i <= 10; i++)
+  {
+   text(i * 10 + "-", buttonX - (width/100), (buttonY + buttonH)  - (gaps * i)); 
+  }
   //map(laserCharge, 0, 100, buttonY + buttonH, buttonY)
   //println(map(laserCharge, 100, 0, buttonY, buttonY + buttonH));
 }
