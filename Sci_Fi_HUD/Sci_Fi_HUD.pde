@@ -322,6 +322,8 @@ void warpDrive()
     println("warpDrive: " + warpDrive);
     println("speedUp: " + speedUp);
     starSelect = false;
+    
+    // this speeds the animtion for the star warp
     if (speedUp)
     {
       speed +=  warpAccelration;
