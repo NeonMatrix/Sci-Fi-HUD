@@ -15,6 +15,7 @@ void setup()
   aimY = height/2;
   laserPower = 2;
   laserCharge = 100;
+  shieldCharge = 100;
 
   // adds stars
   for (int i = 0; i < 10000; i++)
@@ -41,6 +42,7 @@ boolean laserOn;
 float aimX, aimY;
 float laserPower;
 float laserCharge;
+float shieldCharge;
 Radar radar1;
 Spinny aim;
 
@@ -63,7 +65,7 @@ void draw()
   
   if(laserOn)
   {
-    drawAim(aimX, aimY);
+    drawAim(mouseX, mouseY);
   }
 
   if (starMapActive)
@@ -90,6 +92,7 @@ void draw()
   laserButton();
   laserToggle();
   chargeMetre();
+  shieldMetre(); 
   //aimBullEye();
   
   if(laserCharge <= 100)
@@ -187,6 +190,14 @@ void mousePressed()
         starMapActive = false;
       }
     }
+  }
+  
+  if(laserOn)
+  {
+    if(laserCharge > laserPower)
+      {
+        shootLaser(mouseX, mouseY);
+      }
   }
 }
 
@@ -376,6 +387,7 @@ void drawAim(float x, float y)
   aim.update(x, y);
   aim.render();
   
+  /*
   if(keyPressed)
   {
      switch(keyCode)
@@ -393,6 +405,7 @@ void drawAim(float x, float y)
       }
     }
     
+    */
     if(aimX > width)
     {
       aimX = width;
@@ -410,11 +423,11 @@ void drawAim(float x, float y)
     {
       aimY = 0;
     }
-  }
+  //}
   
 }
 
-void shootLaser()
+void shootLaser(float aimX, float aimY)
 {
   strokeWeight(laserPower);
   //stroke(255, 0, map(laserPower, 0, 10, 0, 255));
@@ -468,6 +481,28 @@ void chargeMetre()
   {
    text(i * 10 + "-", buttonX - (width/100), (buttonY + buttonH)  - (gaps * i)); 
   }
-  //map(laserCharge, 0, 100, buttonY + buttonH, buttonY)
-  //println(map(laserCharge, 100, 0, buttonY, buttonY + buttonH));
+}
+
+void shieldMetre() 
+{
+  float buttonX = width * 0.87;
+  float buttonY = height * 0.75;
+  float buttonW = height/12;
+  float buttonH = height/5;
+  
+  rectMode(CORNER);
+  fill(0, 255, 0);
+  rect(buttonX, buttonY, buttonW, buttonH);
+  
+  fill(0);
+  noStroke();
+  rect(buttonX, buttonY, buttonW, map(shieldCharge, 100, 0, 0, buttonH) );
+  
+  float gaps = buttonH/10;
+  textSize(height/50);
+  textAlign(RIGHT);
+  for(int i = 0; i <= 10; i++)
+  {
+   text(i * 10 + "-", buttonX - (width/100), (buttonY + buttonH)  - (gaps * i)); 
+  }
 }
