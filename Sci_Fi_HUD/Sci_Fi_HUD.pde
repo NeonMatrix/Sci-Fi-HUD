@@ -1,7 +1,7 @@
 void setup()
 {
-  size (800, 800, P2D); 
-  //fullScreen();
+  //size (800, 800, P2D); 
+  fullScreen();
   loadData();
   warpDrive = false;
   speed = 0;
@@ -188,6 +188,15 @@ void mousePressed()
       }
     }
   }
+  
+  if(laserOn)
+  {
+    shootingLaser = true;
+    if(laserCharge > laserPower)
+      {
+        shootLaser(mouseX, mouseY);
+      }
+  }
 
   if (mouseX > width * 0.45 - ((height/7) /2) && mouseX < (width * 0.45) + ((height/7) /2))
   {
@@ -207,15 +216,6 @@ void mousePressed()
         laserOn = true;
       }
     }
-  }
-  
-  if(laserOn)
-  {
-    shootingLaser = true;
-    if(laserCharge > laserPower)
-      {
-        shootLaser(mouseX, mouseY);
-      }
   }
 }
 
@@ -304,16 +304,19 @@ void warpDrive()
       speed +=  warpAccelration;
       background(0, 0, speed);
       println(speed);
+      shieldCharge = random(50, 100);
       if (speed > 200)
       {
         speedUp = false; 
         println("speedUp: " + speedUp);
       }
+      
     } else
     {
       println("speedUp: " + speedUp);
       speed -= warpAccelration;
       background(0, 0, speed);
+      shieldCharge = random(50, 100);
     }
 
     if (speed == 0)
@@ -321,6 +324,7 @@ void warpDrive()
       println(speed);
       warpDrive = false;
       println("warpDrive: " + warpDrive);
+      shieldCharge = 100;
     }
   }
 }
@@ -483,6 +487,10 @@ void laserToggle()
   rectMode(CENTER);
   fill(0, 110, 225);
   rect(buttonX + buttonW/2, map(laserPower, 0,10, buttonY + buttonH, buttonY) , height/20, height/50);
+  
+  textAlign(CENTER);
+  fill(0, 255, 255);
+  text("Laser Toggle", buttonX + buttonW/2, (buttonY + buttonH) + height/40); 
 }
 
 void chargeMetre()
@@ -507,6 +515,10 @@ void chargeMetre()
   {
    text(i * 10 + "-", buttonX - (width/100), (buttonY + buttonH)  - (gaps * i)); 
   }
+  
+  textAlign(CENTER);
+  fill(0, 255, 255);
+  text("Charge", buttonX + buttonW/2, (buttonY + buttonH) + height/40);
 }
 
 void shieldMetre() 
@@ -531,4 +543,8 @@ void shieldMetre()
   {
    text(i * 10 + "-", buttonX - (width/100), (buttonY + buttonH)  - (gaps * i)); 
   }
+  
+  textAlign(CENTER);
+  fill(0, 255, 255);
+  text("Charge", buttonX + buttonW/2, (buttonY + buttonH) + height/40);
 }
