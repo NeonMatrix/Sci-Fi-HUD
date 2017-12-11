@@ -220,6 +220,8 @@ void mousePressed()
     shootingLaser = true;
     if(laserCharge > laserPower)
       {
+        laserShot.rewind();
+        laserShot.play();
         shootLaser(mouseX, mouseY);
       }
   }
@@ -250,7 +252,8 @@ void mouseReleased()
   if(shootingLaser)
   {
     shootingLaser = false;
-    laserBurn.close();
+    laserBurn.pause();
+    laserBurn.rewind();
   }
 }
 
@@ -278,6 +281,8 @@ void mouseDragged()
         }
         println(laserPower);
         shootingLaser = false;
+        laserBurn.pause();
+        
     }
   }
 }
@@ -465,10 +470,12 @@ void shootLaser(float aimX, float aimY)
   line(0, height, aimX, aimY);
   line(width, height, aimX, aimY);
   laserCharge -= laserPower;
-  
-  laserBurn.play();
-  laserBurn.rewind();
-  
+  //  laserBurn.rewind();  
+   laserBurn.play();
+  if(frameCount % 60 == 0)
+  {
+    laserBurn.rewind(); 
+  }
 }
 
 void laserToggle()
