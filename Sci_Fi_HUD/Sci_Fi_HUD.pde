@@ -560,7 +560,7 @@ void shieldMetre()
   
   textAlign(CENTER);
   fill(0, 255, 255);
-  text("Charge", buttonX + buttonW/2, (buttonY + buttonH) + height/40);
+  text("Shield", buttonX + buttonW/2, (buttonY + buttonH) + height/40);
 }
 
 void drawCurrentStar()
