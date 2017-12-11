@@ -1,7 +1,11 @@
+import ddf.minim.*;
+AudioPlayer spaceshipSounds, laserShot, laserBurn;
+Minim minim;
+
 void setup()
 {
-  //size (900, 900, P2D); 
-  fullScreen();
+  size (900, 900, P2D); 
+  //fullScreen();
   loadData();
   warpDrive = false;
   speed = 0;
@@ -30,7 +34,12 @@ void setup()
   radar1 = new Radar(width/9, height * 0.85, height * 0.08, 0.5, color(0, 110, 255));
   aim = new Spinny(width/2, height/2, 2);
   
-  //println(mapstars.size());
+  minim = new Minim(this);
+  spaceshipSounds = minim.loadFile("spaceshipsounds.mp3");
+  laserShot = minim.loadFile("lasershot.mp3");
+  laserBurn = minim.loadFile("laserburn.mp3");
+  
+  spaceshipSounds.loop();
 }
 
 // delcaring variables
@@ -241,6 +250,7 @@ void mouseReleased()
   if(shootingLaser)
   {
     shootingLaser = false;
+    laserBurn.close();
   }
 }
 
@@ -455,6 +465,10 @@ void shootLaser(float aimX, float aimY)
   line(0, height, aimX, aimY);
   line(width, height, aimX, aimY);
   laserCharge -= laserPower;
+  
+  laserBurn.play();
+  laserBurn.rewind();
+  
 }
 
 void laserToggle()
