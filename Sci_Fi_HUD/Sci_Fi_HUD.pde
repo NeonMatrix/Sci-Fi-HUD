@@ -106,12 +106,16 @@ void draw()
   // draw the star map when the star button is pressed
   if (starMapActive)
   {
+    // draw the star grid
     starMapGrid();
+    // if the two stars have been clicked 
     if (click1 == true && click2 == true)
     {
       textAlign(CENTER);
       stroke(0, 255, 255);
+      //draw the connecting line between the stars
       line(cstar1x, cstar1y, cstar2x, cstar2y);
+      // display the display the disatnce between the stars below the star map
       text("Star Distance: " + clickedStar1.dist(clickedStar2) + " parsecs", width/2, height* 0.65);
     }
   }
@@ -149,6 +153,7 @@ void mousePressed()
   {
     if (mouseY > height * 0.9 && mouseY < height * 0.9 + height/20)
     {
+      // check if a star has been selected, since you need to warp to that star
       if(starSelect)
       {
         warpDrive = true;
@@ -165,11 +170,12 @@ void mousePressed()
   {
     if (mouseY > height * 0.75 && mouseY < height * 0.75 + height/7)
     {
+      //check if the star map is already turned on, if it is, turn it off
       if (starMapActive)
       {
         starMapActive = false;
         shootingLaser = false;
-      } else
+      } else // turn on the star map
       {
         println("StarMap");
         starMapActive = true;
@@ -186,6 +192,7 @@ void mousePressed()
     float posX = width/2;
     float posY = height * 0.05;
 
+    // if two stars already selected, turn off the selected stars
     if (click1 == true && click2 == true)
     {
       click1 = false;
@@ -194,6 +201,7 @@ void mousePressed()
 
     mouseV = new PVector(mouseX, mouseY);
 
+    // itterate throught the stars and check which star has been clicked
     for (MapStar s : mapstars)
     {
       float realStarX = map(s.xg, -5, 5, posX - (size/2), posX + (size/2));
@@ -225,30 +233,33 @@ void mousePressed()
     }
   }
   
+  // if the laser is o, shoot the laser
   if(laserOn)
   {
     shootingLaser = true;
+    // only shoot laser if there is laser charge left
     if(laserCharge > laserPower)
       {
         laserShot.rewind();
         laserShot.play();
+        // shoot laser where the mouse is at
         shootLaser(mouseX, mouseY);
       }
   }
-
+  
+  // check if the laser botton is clicked
   if (mouseX > width * 0.45 - ((height/7) /2) && mouseX < (width * 0.45) + ((height/7) /2))
   {
     if (mouseY > height * 0.85 -((height/7) /2) && mouseY < height * 0.85 + ((height/7) /2))
     {
+      // if laser is on already, turn it off
       if (laserOn)
       {
-        aimX = width/2;
-        aimY = height/2;
         laserOn = false;
         shootingLaser = false;
-      } else {
-        //delay(1000);
-        //laserOn = true;
+        laserBurn.pause();
+      } else { // else turn is off then turn it on
+      
         shootingLaser = false;
         starMapActive = false;
         laserOn = true;
@@ -259,6 +270,7 @@ void mousePressed()
 
 void mouseReleased()
 {
+  // if mouse is released, stop shooting laser
   if(shootingLaser)
   {
     shootingLaser = false;
@@ -273,14 +285,16 @@ void mouseDragged()
   float buttonY = height * 0.75;
   float buttonW = height/100;
   float buttonH = height/5;
-  //rect(buttonX + buttonW/2, map(laserPower, 0,10, buttonY + buttonH, buttonY) , height/20, height/50);
   
+  // check if the mouse is on the laser charge toggle
   if(mouseX > (buttonX + buttonW/2) - (height/20)/2 && mouseX < (buttonX + buttonW/2) + (height/20)/2 )
   {
     if(mouseY > map(laserPower, 0,10, buttonY + buttonH, buttonY) - (height/50)/2 && mouseY < map(laserPower, 0,10, buttonY + buttonH, buttonY) + (height/50)/2)
     {
+        // change the laserPower when you drag the laser power toggle
         laserPower = map(mouseY, buttonY, buttonY + buttonH, 10, 0);
         
+        // this limits the toggle, so you won't push the toggle too much top or button
         if(laserPower < 0)
         {
           laserPower = 0;
@@ -289,18 +303,19 @@ void mouseDragged()
         {
           laserPower = 10;
         }
-        println(laserPower);
         shootingLaser = false;
-        laserBurn.pause();
-        
+        laserBurn.pause();     
     }
   }
 }
 
+//load star data from the .csv file
 void loadData()
 {
+  // make the table
   Table table = loadTable("starmap.csv", "header");
 
+  // itterate through the rows, and add them into an array list of MapStars
   for (TableRow r : table.rows())
   {
     MapStar mapstar = new MapStar(r);
@@ -308,7 +323,7 @@ void loadData()
   }
 }
 
-
+// draw drawing the blue background of the dash board
 void board()
 {
   rectMode(CORNER);
@@ -318,19 +333,23 @@ void board()
   rect(0, height * 0.7, width, height * 0.3);
 }
 
+// drawing the warp button on the dash board
 void warpButton()
 {
   float buttonX = width * 0.22;
   float buttonY = height * 0.9;
   float buttonW = height/7;
   float buttonH = height/20;
+  
+  // color the button blue, by default
   fill(0, 110, 255);
+
+  //if the
   if(starSelect)
   {
     fill(0, 255, 0);
   }
   noStroke();
-  //rectMode(CENTER);
   rect(buttonX, buttonY, buttonW, buttonH);
   fill(0);
   textAlign(CENTER);
