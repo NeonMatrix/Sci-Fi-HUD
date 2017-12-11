@@ -1,7 +1,7 @@
 void setup()
 {
-  size (800, 800, P2D); 
-  //fullScreen();
+  //size (900, 900, P2D); 
+  fullScreen();
   loadData();
   warpDrive = false;
   speed = 0;
@@ -559,7 +559,10 @@ void drawCurrentStar()
   popMatrix();
  
   line(x + triHeight + width/200, y + triHeight/2, (x + triHeight + width/200) + height/200 , (y + triHeight/2) - height/50); 
-  line((x + triHeight + width/200) + height/200, (y + triHeight/2) - height/50, ((x + triHeight + width/200) + height/200) + height/7 , (y + triHeight/2) - width/50);
+  line((x + triHeight + width/200) + height/200, 
+      ( y + triHeight/2) - height/50, 
+      ((x + triHeight + width/200) + height/200) + height/7 , 
+      (y + triHeight/2) - height/50);
   
   textAlign(LEFT);
   textSize(height/40);
