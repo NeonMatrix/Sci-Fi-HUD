@@ -5,7 +5,7 @@ Minim minim;
 void setup()
 {
   size (900, 900, P2D); 
-  //fullScreen();
+  //fullScreen(P3D);
   loadData();
   warpDrive = false;
   speed = 0;
@@ -24,22 +24,25 @@ void setup()
   triangleTheta = 0;
   starSelect = false;
 
-  // adds stars
+  // adding background stars
   for (int i = 0; i < 10000; i++)
   {
     stars.add(new Star());
   }
   
+  // initializing the current star we are on
   currentStar = mapstars.get((int)random(0, mapstars.size()));
+  //initializing radar
   radar1 = new Radar(width/9, height * 0.85, height * 0.08, 0.5, color(0, 110, 255));
+  // initializing the aim thing with the spinny thing
   aim = new Spinny(width/2, height/2, 2);
   
+  //initializing the sound effects
   minim = new Minim(this);
   spaceshipSounds = minim.loadFile("spaceshipsounds.mp3");
   laserShot = minim.loadFile("lasershot.mp3");
   laserBurn = minim.loadFile("laserburn.mp3");
   warpDriveSound = minim.loadFile("warpdrive.mp3");
-  spaceshipSounds.loop();
 }
 
 // delcaring variables
@@ -62,6 +65,7 @@ float shieldCharge;
 float triangleTheta;
 boolean shootingLaser;
 boolean starSelect;
+
 Radar radar1;
 Spinny aim;
 MapStar currentStar, selectedStar;
@@ -73,6 +77,7 @@ void draw()
 
   warpDrive();
 
+  // updating the stars in the background
   pushMatrix();
   translate(width/2, height/2);
   for (int i = 0; i < stars.size(); i++)
@@ -83,11 +88,13 @@ void draw()
   }
   popMatrix();
   
+  // draw the aim if the laser is on
   if(laserOn)
   {
     drawAim(mouseX, mouseY);
   }
   
+  // shoot lasers when shooting laser is on
   if(shootingLaser)
   {
     if(laserCharge > laserPower)
@@ -96,10 +103,10 @@ void draw()
       }
   }
 
+  // draw the star map when the star button is pressed
   if (starMapActive)
   {
     starMapGrid();
-    drawMapStars();
     if (click1 == true && click2 == true)
     {
       textAlign(CENTER);
@@ -109,8 +116,10 @@ void draw()
     }
   }
 
+  // draw the blue background of the space ship
   board();
 
+  // draw the buttons, radars and toggles
   warpButton();
 
   radar1.render();
@@ -123,6 +132,7 @@ void draw()
   shieldMetre(); 
   drawCurrentStar();
   
+  // recharge the laser charge battry
   if(laserCharge <= 100)
   {
     laserCharge++;
@@ -131,7 +141,7 @@ void draw()
   
 }
 
-// checls which buttons have been pressed
+// checks which buttons have been pressed
 void mousePressed()
 {
   // checks if mouse clicked on the warp button
@@ -395,9 +405,18 @@ void starMapGrid()
   float size = height/1.75;
   float posX = width/2;
   float posY = height * 0.05;
-
-  stroke(0, 110, 255);
+  
+  pushMatrix();
+  
+  translate(posX, posY);
+ 
+  noStroke();
+  rectMode(CENTER);
+  fill(0, 110, 255, 100);
+  rect(0,0 + size/2, size, size);
+  
   fill(0, 110, 255);
+  stroke(0, 110, 255);
   strokeWeight(1);
   int counter = -5;
   textAlign(CENTER, CENTER);
@@ -405,18 +424,40 @@ void starMapGrid()
   for (int i = 0; i < 11; i++)
   {
     textAlign(CENTER);
-    text(counter, (posX + ((size/10)*i)) - (size/2), posY - height/100);
-    line((posX + ((size/10)*i)) - (size/2), posY, (posX + ((size/10)*i)) - (size/2), posY + size);
+    text(counter, (((size/10)*i)) - (size/2), 0 - height/100);
+    line((((size/10)*i)) - (size/2), 0, (((size/10)*i)) - (size/2),size);
 
     textAlign(RIGHT, CENTER);
-    text(counter, posX - (size/2) - height/100, posY + ((size/10)*i));
-    line(posX - (size/2), posY + ((size/10)*i), (posX + size) - (size/2), posY + ((size/10)*i));
+    text(counter, 0 - (size/2) - height/100,((size/10)*i));
+    line(0 - (size/2), ((size/10)*i), (size) - (size/2),((size/10)*i));
     counter++;
   }
-}
+  
+  stroke(255, 255, 0);
+  for (MapStar s : mapstars)
+  {
+    float x = map(s.xg, -5, 5, 0 - (size/2), (size/2));
+    float y = map(s.yg, -5, 5, 0, size);
+    stroke(255, 255, 0);
+    line(x, y - 2, x, y + 2);
+    line(x -2, y, x + 2, y);
 
+    noFill();
+    stroke(255, 0, 0);
+    ellipse(x, y, s.mag, s.mag);
+
+    fill(255);
+    textSize(height/70);
+    //textAlign(CENTER);
+    text(s.displayName, x, y - 10);
+  }
+  
+  popMatrix();
+}
+/*
 void drawMapStars()
 {
+  
   stroke(255, 255, 0);
   float size = height/1.75;
   float posX = width/2;
@@ -440,7 +481,7 @@ void drawMapStars()
     text(s.displayName, x, y - 10);
   }
 }
-
+*/
 void laserButton()
 {
   float size = height/7;
