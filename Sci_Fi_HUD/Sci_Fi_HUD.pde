@@ -1,5 +1,5 @@
 import ddf.minim.*;
-AudioPlayer spaceshipSounds, laserShot, laserBurn;
+AudioPlayer spaceshipSounds, laserShot, laserBurn, warpDriveSound;
 Minim minim;
 
 void setup()
@@ -11,7 +11,7 @@ void setup()
   speed = 0;
   speedUp = false;
   starMapActive = false;
-  warpAccelration = 5;
+  warpAccelration = 7;
   click1 = false;
   click2 = false;
   laserOn = false;
@@ -38,7 +38,7 @@ void setup()
   spaceshipSounds = minim.loadFile("spaceshipsounds.mp3");
   laserShot = minim.loadFile("lasershot.mp3");
   laserBurn = minim.loadFile("laserburn.mp3");
-  
+  warpDriveSound = minim.loadFile("warpdrive.mp3");
   spaceshipSounds.loop();
 }
 
@@ -333,6 +333,7 @@ void warpDrive()
 {
   if (warpDrive)
   {
+    warpDriveSound.play();
     println(speed);
     println("warpDrive: " + warpDrive);
     println("speedUp: " + speedUp);
@@ -368,6 +369,8 @@ void warpDrive()
       shieldCharge = 100;
       currentStar = selectedStar;
       click1 = false;
+      warpDriveSound.pause();
+      warpDriveSound.rewind();
     }
   }
 }
