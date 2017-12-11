@@ -1,3 +1,8 @@
+/*
+  Povilas Kubilius  
+  DT228/2 OOP
+  My sci fi HUD
+*/
 import ddf.minim.*;
 AudioPlayer spaceshipSounds, laserShot, laserBurn, warpDriveSound;
 Minim minim;
@@ -344,11 +349,13 @@ void warpButton()
   // color the button blue, by default
   fill(0, 110, 255);
 
-  //if the
+  //if a star has been selected from the star map, the colour the warp button green.
   if(starSelect)
   {
     fill(0, 255, 0);
   }
+
+  // drawing the actual button
   noStroke();
   rect(buttonX, buttonY, buttonW, buttonH);
   fill(0);
@@ -360,36 +367,38 @@ void warpButton()
 // The animations and maths for the warp drive
 void warpDrive()
 {
+  // if warp
   if (warpDrive)
   {
     warpDriveSound.play();
     println(speed);
-    println("warpDrive: " + warpDrive);
-    println("speedUp: " + speedUp);
     starSelect = false;
     
     // this speeds the animtion for the star warp
     if (speedUp)
     {
+      // increases the speed at which the stars move towards the screen
       speed +=  warpAccelration;
+      // this turns the background blue the faster the warp is
       background(0, 0, speed);
       println(speed);
+      // this also makes the shield metre flicker while warping
       shieldCharge = random(50, 100);
       // when maxium speeed is reached, speed stops and stars declearting
       if (speed > 200)
       {
         speedUp = false; 
-        println("speedUp: " + speedUp);
       }
       
     } else
+    // this where the star speed stars to decelarte
     {
-      println("speedUp: " + speedUp);
       speed -= warpAccelration;
       background(0, 0, speed);
       shieldCharge = random(50, 100);
     }
 
+    // once the speed is 0, turn off the warp drive
     if (speed == 0)
     {
       println(speed);
@@ -404,6 +413,7 @@ void warpDrive()
   }
 }
 
+// draw the star map button
 void starMapButton()
 {
   float size = height/7;
@@ -411,6 +421,7 @@ void starMapButton()
   float posY = height * 0.75;
 
   strokeWeight(1);
+  // drawing the lines of the grid in the star map button
   for (int i = 0; i < 11; i++)
   {
     line(posX + ((size/10)*i), posY, posX + ((size/10)*i), posY + size);
@@ -418,6 +429,7 @@ void starMapButton()
   }
 }
 
+// drawing the star map
 void starMapGrid()
 {
 
@@ -425,38 +437,50 @@ void starMapGrid()
   float posX = width/2;
   float posY = height * 0.05;
   
+  // the whole push matrix and translates are from my attemp to make the star map pop up
   pushMatrix();
-  
+  // the translate makes all the future co ordinate from posX and posY as 0, 0
   translate(posX, posY);
- 
+  
+  // this makes the semi transparent blue background of the star map
   noStroke();
   rectMode(CENTER);
   fill(0, 110, 255, 100);
   rect(0,0 + size/2, size, size);
   
+  // set up to draw the grid lines
   fill(0, 110, 255);
   stroke(0, 110, 255);
   strokeWeight(1);
   int counter = -5;
   textAlign(CENTER, CENTER);
   textSize(height/50);
+  
+  // drawing the grid lines of the star map
   for (int i = 0; i < 11; i++)
   {
+    // the vertical lines
     textAlign(CENTER);
     text(counter, (((size/10)*i)) - (size/2), 0 - height/100);
     line((((size/10)*i)) - (size/2), 0, (((size/10)*i)) - (size/2),size);
 
+    // the horizontal lines
     textAlign(RIGHT, CENTER);
     text(counter, 0 - (size/2) - height/100,((size/10)*i));
     line(0 - (size/2), ((size/10)*i), (size) - (size/2),((size/10)*i));
+    // the counter is the numbers that are gonna be writing on the side of the map, to represent the parsects 
     counter++;
   }
   
+  // draws the actual the stars on the from, from the map stars array list
   stroke(255, 255, 0);
   for (MapStar s : mapstars)
   {
+    // sets the x and y cooridnates by maping the parsects from the file, to the screen size
     float x = map(s.xg, -5, 5, 0 - (size/2), (size/2));
     float y = map(s.yg, -5, 5, 0, size);
+    
+    // drawing the cross hairs to mark where the star is on the map
     stroke(255, 255, 0);
     line(x, y - 2, x, y + 2);
     line(x -2, y, x + 2, y);
@@ -467,40 +491,12 @@ void starMapGrid()
 
     fill(255);
     textSize(height/70);
-    //textAlign(CENTER);
     text(s.displayName, x, y - 10);
   }
   
   popMatrix();
 }
-/*
-void drawMapStars()
-{
-  
-  stroke(255, 255, 0);
-  float size = height/1.75;
-  float posX = width/2;
-  float posY = height * 0.05;
 
-  for (MapStar s : mapstars)
-  {
-    float x = map(s.xg, -5, 5, posX - (size/2), posX + (size/2));
-    float y = map(s.yg, -5, 5, posY, posY + size);
-    stroke(255, 255, 0);
-    line(x, y - 2, x, y + 2);
-    line(x -2, y, x + 2, y);
-
-    noFill();
-    stroke(255, 0, 0);
-    ellipse(x, y, s.mag, s.mag);
-
-    fill(255);
-    textSize(height/70);
-    //textAlign(CENTER);
-    text(s.displayName, x, y - 10);
-  }
-}
-*/
 void laserButton()
 {
   float size = height/7;
@@ -528,12 +524,10 @@ void drawAim(float x, float y)
 void shootLaser(float aimX, float aimY)
 {
   strokeWeight(laserPower);
-  //stroke(255, 0, map(laserPower, 0, 10, 0, 255));
   stroke(225, 0, 0);
   line(0, height, aimX, aimY);
   line(width, height, aimX, aimY);
-  laserCharge -= laserPower;
-  //  laserBurn.rewind();  
+  laserCharge -= laserPower; 
    laserBurn.play();
   if(frameCount % 60 == 0)
   {
