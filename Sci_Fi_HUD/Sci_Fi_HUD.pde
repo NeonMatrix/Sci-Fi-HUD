@@ -3,14 +3,15 @@
   DT228/2 OOP
   My sci fi HUD
 */
+
 import ddf.minim.*;
 AudioPlayer spaceshipSounds, laserShot, laserBurn, warpDriveSound;
 Minim minim;
 
 void setup()
 {
-  //size (1920, 1080, P2D); 
-  fullScreen(P2D);
+  size (800, 800, P2D); 
+  //fullScreen(P2D);
   loadData();
   warpDrive = false;
   speed = 0;

@@ -1,3 +1,4 @@
+// This is a class for the stars you see on the star map
 class MapStar
 {
  boolean hab;
@@ -7,6 +8,7 @@ class MapStar
  float mag;
 
  
+ // this is the constructor which assigns each stars data from the data in the .csv file
  MapStar(TableRow row)
  {
    displayName = row.getString("Display Name");
