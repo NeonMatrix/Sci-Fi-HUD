@@ -51,6 +51,8 @@ void setup()
   laserShot = minim.loadFile("lasershot.mp3");
   laserBurn = minim.loadFile("laserburn.mp3");
   warpDriveSound = minim.loadFile("warpdrive.mp3");
+  
+  spaceshipSounds.loop();
 }
 
 // delcaring variables
