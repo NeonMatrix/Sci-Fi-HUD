@@ -9,8 +9,8 @@ Minim minim;
 
 void setup()
 {
-  size (900, 900, P2D); 
-  //fullScreen(P3D);
+  //size (900, 900, P2D); 
+  fullScreen(P3D);
   loadData();
   warpDrive = false;
   speed = 0;
@@ -35,10 +35,13 @@ void setup()
     stars.add(new Star());
   }
   
-  // initializing the current star we are on
+  // this is actually is MapStar object which holds the star info of the current star we are on, 
+  // which is randomly assigned when you start, and changes when you wrap to a new star
   currentStar = mapstars.get((int)random(0, mapstars.size()));
+  
   //initializing radar
   radar1 = new Radar(width/9, height * 0.85, height * 0.08, 0.5, color(0, 110, 255));
+  
   // initializing the aim thing with the spinny thing
   aim = new Spinny(width/2, height/2, 2);
   
@@ -405,6 +408,7 @@ void warpDrive()
       warpDrive = false;
       println("warpDrive: " + warpDrive);
       shieldCharge = 100;
+      // when you warp to a new star, the currentStar gets updated to be star we selected on the star map
       currentStar = selectedStar;
       click1 = false;
       warpDriveSound.pause();
@@ -441,7 +445,7 @@ void starMapGrid()
   pushMatrix();
   // the translate makes all the future co ordinate from posX and posY as 0, 0
   translate(posX, posY);
-  
+  scale(1);
   // this makes the semi transparent blue background of the star map
   noStroke();
   rectMode(CENTER);
@@ -485,10 +489,12 @@ void starMapGrid()
     line(x, y - 2, x, y + 2);
     line(x -2, y, x + 2, y);
 
+    // drawing the circle around the cross hair, and diffrent size depending of the star magnitude
     noFill();
     stroke(255, 0, 0);
     ellipse(x, y, s.mag, s.mag);
 
+    // then write the star name where the star is located
     fill(255);
     textSize(height/70);
     text(s.displayName, x, y - 10);
@@ -497,6 +503,7 @@ void starMapGrid()
   popMatrix();
 }
 
+// drawing the laser circular button
 void laserButton()
 {
   float size = height/7;
@@ -509,32 +516,44 @@ void laserButton()
   text("LASER", posX, posY);
 }
 
+// drawing the aim thing when laser is on
 void drawAim(float x, float y)
 {
   strokeWeight(5);
   stroke(0, 110, 255);
+  // drawing the 4 lines in the aim thingy
   line(x, y - 10, x, y - 45);
   line(x + 10, y, x + 45, y);
   line(x, y + 10, x, y + 45);
   line(x - 10, y, x - 45, y);
+  // this draws the two spinny circles in the aim thingy
   aim.update(x, y);
   aim.render();  
 }
 
+// this draws the laser when the laser is shot
 void shootLaser(float aimX, float aimY)
 {
   strokeWeight(laserPower);
   stroke(225, 0, 0);
+  // drawing the laser beams from the bottom corner to where the mouse is located
   line(0, height, aimX, aimY);
   line(width, height, aimX, aimY);
+  
+  //discharge the laser chrage after shot
   laserCharge -= laserPower; 
-   laserBurn.play();
+  
+  // play the laser sound effect
+  laserBurn.play();
+  
+  // rewind the laser sound effect every second, to have a contintues laser burn sound effect
   if(frameCount % 60 == 0)
   {
     laserBurn.rewind(); 
   }
 }
 
+// draw the laser power toggle button 
 void laserToggle()
 {
   float buttonX = width * 0.6;
@@ -542,8 +561,10 @@ void laserToggle()
   float buttonW = height/100;
   float buttonH = height/5;
   
+  // draw the middle bar where the botton will be sliding
   rect(buttonX, buttonY, buttonW, buttonH);
   
+  // draw the numbers labels to let you know what's the laser power
   float gaps = buttonH/10;
   textSize(height/50);
   textAlign(RIGHT);
@@ -552,15 +573,18 @@ void laserToggle()
    text(i + "-", buttonX - (width/50), (buttonY + buttonH)  - (gaps * i)); 
   }
   
+  // draw the blue slider on the toggle, but the Y axis is mapped based of the laser power
   rectMode(CENTER);
   fill(0, 110, 225);
   rect(buttonX + buttonW/2, map(laserPower, 0,10, buttonY + buttonH, buttonY) , height/20, height/50);
   
+  // drawing the label of this slider under it
   textAlign(CENTER);
   fill(0, 255, 255);
-  text("Laser Toggle", buttonX + buttonW/2, (buttonY + buttonH) + height/40); 
+  text("Laser Power", buttonX + buttonW/2, (buttonY + buttonH) + height/40); 
 }
 
+// draw the laser charge meter
 void chargeMetre()
 {
   float buttonX = width * 0.7;
@@ -568,14 +592,17 @@ void chargeMetre()
   float buttonW = height/12;
   float buttonH = height/5;
   
+  // draw the yellow rectangle to be the charge bar
   rectMode(CORNER);
   fill(255, 255, 0);
   rect(buttonX, buttonY, buttonW, buttonH);
   
+  // draw a black bar, which is drawn down the less laser chrage there is
   fill(0);
   noStroke();
   rect(buttonX, buttonY, buttonW, map(laserCharge, 100, 0, 0, buttonH) );
   
+  // just draws the numbers on the side showing how much laser chrage there is left
   float gaps = buttonH/10;
   textSize(height/50);
   textAlign(RIGHT);
@@ -584,11 +611,13 @@ void chargeMetre()
    text(i * 10 + "-", buttonX - (width/100), (buttonY + buttonH)  - (gaps * i)); 
   }
   
+  // label under the charge metre
   textAlign(CENTER);
   fill(0, 255, 255);
   text("Charge", buttonX + buttonW/2, (buttonY + buttonH) + height/40);
 }
 
+//this draws the shield meter
 void shieldMetre() 
 {
   float buttonX = width * 0.87;
@@ -596,14 +625,17 @@ void shieldMetre()
   float buttonW = height/12;
   float buttonH = height/5;
   
+  // draw the green rectangle to be the shield bar
   rectMode(CORNER);
   fill(0, 255, 0);
   rect(buttonX, buttonY, buttonW, buttonH);
   
+  // draw a black bar, which is drawn down the less shield charge there is
   fill(0);
   noStroke();
   rect(buttonX, buttonY, buttonW, map(shieldCharge, 100, 0, 0, buttonH) );
   
+  // just draws the numbers on the side showing how much shield charge there is left
   float gaps = buttonH/10;
   textSize(height/50);
   textAlign(RIGHT);
@@ -612,11 +644,13 @@ void shieldMetre()
    text(i * 10 + "-", buttonX - (width/100), (buttonY + buttonH)  - (gaps * i)); 
   }
   
+  // label under the shield metre
   textAlign(CENTER);
   fill(0, 255, 255);
   text("Shield", buttonX + buttonW/2, (buttonY + buttonH) + height/40);
 }
 
+// draws the triangle and star name in the top left corner
 void drawCurrentStar()
 {
   float x = width * 0.075;
@@ -625,23 +659,27 @@ void drawCurrentStar()
   float speed = (PI / 60.0) * 1;
   float triHeight = (sqrt(3) * size)/2;
   triangleTheta += speed;
+  
   stroke(0, 110, 255);
   strokeWeight(height/200);
   
   pushMatrix();
   translate(x, y);
+  // so this draws the rotating circle in the top left corner of the screen 
   rotate(triangleTheta); 
   line(0, -(triHeight/3)*2, -size/2, triHeight/3);  
   line(-size/2, triHeight/3, size/2, triHeight/3); 
   line(size/2, triHeight/3, 0, -(triHeight/3)*2);
   popMatrix();
  
+  // this draws the little underline beneath the star name in the corner... yes it's probablt the messiest uninteligble code co ordiantes for some lines
   line(x + triHeight + width/200, y + triHeight/2, (x + triHeight + width/200) + height/200 , (y + triHeight/2) - height/50); 
   line((x + triHeight + width/200) + height/200, 
       ( y + triHeight/2) - height/50, 
       ((x + triHeight + width/200) + height/200) + height/7 , 
       (y + triHeight/2) - height/50);
   
+  // draw the star name we are on
   textAlign(LEFT);
   textSize(height/40);
   text(currentStar.displayName,(x + triHeight + width/200) + height/200, height * 0.075);
