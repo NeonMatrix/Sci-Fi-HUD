@@ -9,8 +9,8 @@ Minim minim;
 
 void setup()
 {
-  //size (900, 900, P2D); 
-  fullScreen(P3D);
+  //size (1920, 1080, P2D); 
+  fullScreen(P2D);
   loadData();
   warpDrive = false;
   speed = 0;
