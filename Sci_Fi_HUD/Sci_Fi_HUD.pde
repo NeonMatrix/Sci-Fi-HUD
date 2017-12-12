@@ -187,7 +187,6 @@ void mousePressed()
         shootingLaser = false;
       } else // turn on the star map
       {
-        println("StarMap");
         starMapActive = true;
         laserOn = false;
         shootingLaser = false;
@@ -406,9 +405,7 @@ void warpDrive()
     // once the speed is 0, turn off the warp drive
     if (speed == 0)
     {
-      println(speed);
       warpDrive = false;
-      println("warpDrive: " + warpDrive);
       shieldCharge = 100;
       // when you warp to a new star, the currentStar gets updated to be star we selected on the star map
       currentStar = selectedStar;
