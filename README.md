@@ -11,3 +11,5 @@ click on the star you want, and when the warp button turns green, click the warp
 and you will warp to that star.
 In the star map, if you click one star then anther you will get to see the distance between the stars
 measured in parsecs.
+
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE "Video Title")
